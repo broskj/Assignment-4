@@ -47,11 +47,25 @@ exports.read = function (req, res) {
 /* Update a listing */
 exports.update = function (req, res) {
     console.log('request.update');
-    console.log(req.body);
+    console.log(req.body);/*
     req.listing.findOneAndUpdate({code: req.params.code}, req.body, function(err, listing) {
         res.send(listing);
-    });
+    });*/
+    var listing = req.listing;
+    listing.code = req.body.code;
+    listing.name = req.body.name;
+    listing.address = req.body.address;
+    if(listing.coordinates)
+        listing.coordinates = req.results;
 
+    listing.save(function(err) {
+        if(err) {
+            console.log(err);
+            res.status(400).send(err);
+        } else {
+            res.json(listing);
+        }
+    });
 
     /* Replace the article's properties with the new properties found in req.body */
     /* save the coordinates (located in req.results if there is an address property) */
@@ -60,8 +74,8 @@ exports.update = function (req, res) {
 
 /* Delete a listing */
 exports.delete = function (req, res) {
-    console.log('listing.delete');
-    req.listing.find({ code: req.params.code }, function(err, listing) {
+    console.log('listing.delete');/*
+    req.listing.findOne({ code: req.params.code }, function(err, listing) {
         if (err) throw err;
 
         req.listing.remove(function(err) {
@@ -69,6 +83,11 @@ exports.delete = function (req, res) {
 
             console.log('listing successfully deleted!');
         });
+    });*/
+    var listing = req.listing;
+    listing.remove(function(err) {
+        if (err) throw err;
+        res.json(listing);
     });
 
     /* Remove the article */
@@ -78,13 +97,15 @@ exports.delete = function (req, res) {
 exports.list = function (req, res) {
     /* Your code here */
     console.log('listing.list');
-    Listing.find({}, function(err, listings) {
-        res.body = listings;
-        res.send(listings);
+    Listing.find({}, null, function(err, listings) {
+        if (err) res.status(400).send(err);
+        //res.body = listings;
+        //res.send(listings);
+        res.json(listings);
     });
 };
 
-/* 
+/*
  Middleware: find a listing by its ID, then pass it to the next request handler.
 
  HINT: Find the listing using a mongoose query,
