@@ -1,0 +1,31 @@
+{
+  "name": "Assignment4",
+  "description": "Routing server-side requests using ExpressJS",
+  "main": "server.js",
+  "authors": [
+    "Gavin Scheele",
+    "Kyle Brost"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/broskj/Assignment-4",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/css/bootstrap.min.css",
+        "less/bootstrap.less"
+      ]
+    }
+  }
+}

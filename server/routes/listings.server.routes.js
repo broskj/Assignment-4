@@ -1,5 +1,5 @@
 /* Dependencies */
-var listings = require('../controllers/listings.server.controller.js'), 
+var listings = require('../controllers/listings.server.controller.js'),
     getCoordinates = require('../controllers/coordinates.server.controller.js'),
     express = require('express'), 
     router = express.Router();
@@ -15,10 +15,14 @@ router.route('/')
 /*
   The ':' specifies a URL parameter. 
  */
-router.route('/:listingId')
+router.route('/api/listings/:listingId')
   .get(listings.read)
   .put(getCoordinates, listings.update)
   .delete(listings.delete);
+
+router.route('/api/listings')
+    .get(listings.list)
+    .post(listings.create);
 
 /*
   The 'router.param' method allows us to specify middleware we would like to use to handle 
@@ -36,3 +40,4 @@ router.route('/:listingId')
 router.param('listingId', listings.listingByID);
 
 module.exports = router;
+

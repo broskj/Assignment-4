@@ -14,16 +14,13 @@ module.exports.init = function () {
     //initialize app
     var app = express();
 
-    //tell app to use jade
-    app.set('views', './client/views')
-    app.set('view engine', 'jade');
-
 
     //enable request logging for development debugging
     app.use(morgan('dev'));
 
     //body parsing middleware
     app.use(bodyParser.json());
+    app.use(listingsRouter);
 
     /* server wrapper around Google Maps API to get latitude + longitude coordinates from address */
     app.post('/api/coordinates', getCoordinates, function (req, res) {
@@ -32,17 +29,23 @@ module.exports.init = function () {
 
     /* serve static files */
     //access static files with '/static/styles/main.css' etc
-    app.use('/static', express.static('client'));
+    app.use(express.static('client'));
+    app.use('views', express.static('./client/views'));
+
 
     /* use the listings router for requests to the api */
-    app.get('/api/*', function (req, res, next) {
-        console.log('the response will be sent by the next function ...');
-        next();
-    }, function (req, res) {
-        console.log(req.params);
-        listingsRouter.get('listings/' + req.params._id);
+    app.get('/api/listings', function(req, res, next) {
+        res.send(req.results);
     });
 
+    //save a listing
+    app.post('/api/listings', function(req, res) {
+        res.send(req.results);
+    });
+
+    app.get('/api/listings/:listingId', function(req, res, next) {
+        res.send(req.results);
+    });
 
     app.get('/', function (req, res, next) {
         console.log('the response will be sent by the next function ...');

@@ -6,7 +6,7 @@ module.exports = function(req, res, next) {
     var options = {
       key: config.googleMaps.key, 
       address: req.body.address
-    }
+    };
     request({
       url: 'https://maps.googleapis.com/maps/api/geocode/json', 
       qs: options

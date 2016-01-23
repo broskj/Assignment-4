@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
 
 /* Create a listing */
 exports.create = function (req, res) {
-
+    console.log('listing.create');
     /* Instantiate a Listing */
     var listing = new Listing(req.body);
 
@@ -39,13 +39,16 @@ exports.create = function (req, res) {
 /* Show the current listing */
 exports.read = function (req, res) {
     /* send back the listing as json from the request */
-    res.json(req.listing);
+    console.log('listings.read');
+    console.log(req.params);
+    res.send(req.listing);
 };
 
 /* Update a listing */
 exports.update = function (req, res) {
-    var _listing = req.listing;
-    _listing.findOneAndUpdate({code: req.params.code}, req.body, function(err, listing) {
+    console.log('request.update');
+    console.log(req.body);
+    req.listing.findOneAndUpdate({code: req.params.code}, req.body, function(err, listing) {
         res.send(listing);
     });
 
@@ -57,11 +60,11 @@ exports.update = function (req, res) {
 
 /* Delete a listing */
 exports.delete = function (req, res) {
-    var _listing = req.listing;
-    _listing.find({ code: req.params.code }, function(err, listing) {
+    console.log('listing.delete');
+    req.listing.find({ code: req.params.code }, function(err, listing) {
         if (err) throw err;
 
-        _listing.remove(function(err) {
+        req.listing.remove(function(err) {
             if (err) throw err;
 
             console.log('listing successfully deleted!');
@@ -74,7 +77,9 @@ exports.delete = function (req, res) {
 /* Retreive all the directory listings, sorted alphabetically by listing code */
 exports.list = function (req, res) {
     /* Your code here */
+    console.log('listing.list');
     Listing.find({}, function(err, listings) {
+        res.body = listings;
         res.send(listings);
     });
 };
@@ -87,6 +92,7 @@ exports.list = function (req, res) {
  then finally call next
  */
 exports.listingByID = function (req, res, next, id) {
+    console.log('listing.listingById');
     Listing.findById(id).exec(function (err, listing) {
         if (err) {
             res.status(400).send(err);
