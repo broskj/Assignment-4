@@ -52,19 +52,25 @@ exports.update = function (req, res) {
         res.send(listing);
     });*/
     var listing = req.listing;
-    listing.code = req.body.code;
-    listing.name = req.body.name;
-    listing.address = req.body.address;
-    if(listing.coordinates)
-        listing.coordinates = req.results;
-
-    listing.save(function(err) {
-        if(err) {
-            console.log(err);
-            res.status(400).send(err);
-        } else {
-            res.json(listing);
+    Listing.find({code: req.body.code}, function(err, listing) {
+        if (err) throw err;
+        listing.code = req.body.code;
+        listing.name = req.body.name;
+        if(req.results) {
+            listing.coordinates = {
+                latitude: req.results.lat,
+                longitude: req.results.lng
+            };
         }
+
+        listing.save(function(err) {
+            if(err) {
+                console.log(err);
+                res.status(400).send(err);
+            } else {
+                res.json(listing);
+            }
+        });
     });
 
     /* Replace the article's properties with the new properties found in req.body */
@@ -97,7 +103,7 @@ exports.delete = function (req, res) {
 exports.list = function (req, res) {
     /* Your code here */
     console.log('listing.list');
-    Listing.find({}, null, function(err, listings) {
+    Listing.find({}, null, {sort: {code:1}}, function(err, listings) {
         if (err) res.status(400).send(err);
         //res.body = listings;
         //res.send(listings);
